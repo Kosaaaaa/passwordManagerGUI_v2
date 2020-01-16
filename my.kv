@@ -1,0 +1,320 @@
+<CreateAccountWindow>:
+    name: "create"
+
+    namee: namee
+    password: passw
+
+    FloatLayout:
+        cols:1
+
+        FloatLayout:
+            size: root.width, root.height/2
+
+            Label:
+                text: "CREATE A NEW ACCOUNT"
+                size_hint: 0.8, 0.2
+                pos_hint: {"x":0.1, "top":1}
+                font_size: (root.width**2 + root.height**2) / 13**4
+
+            Label:
+                size_hint: 0.5,0.1
+                pos_hint: {"x":0, "top":0.8}
+                text: "Username: "
+                font_size: (root.width**2 + root.height**2) / 13**4
+
+            TextInput:
+                pos_hint: {"x":0.5, "top":0.8}
+                size_hint: 0.4, 0.1
+                id: namee
+                multiline: False
+                font_size: (root.width**2 + root.height**2) / 13**4
+
+            Label:
+                size_hint: 0.5,0.1
+                pos_hint: {"x":0, "top":0.6}
+                text: "Password: "
+                font_size: (root.width**2 + root.height**2) / 13**4
+
+            TextInput:
+                pos_hint: {"x":0.5, "top":0.6}
+                size_hint: 0.4, 0.1
+                id: passw
+                multiline: False
+                password: True
+                font_size: (root.width**2 + root.height**2) / 13**4
+
+        Button:
+            pos_hint:{"x":0.25,"y":0.1}
+            size_hint: 0.5, 0.1
+            font_size: (root.width**2 + root.height**2) / 15**4
+            text: "Do you already have an account? Log in!"
+            on_release:
+                root.manager.transition.direction = "left"
+                root.login()
+
+        Button:
+            pos_hint:{"x":0.25,"y":0.25}
+            size_hint: 0.5, 0.15
+            text: "Sign up!"
+            font_size: (root.width**2 + root.height**2) / 13**4
+            on_release:
+                root.manager.transition.direction = "left"
+                root.submit()
+<LoginWindow>:
+    name: "login"
+
+    userName: userName
+    password: password
+
+    FloatLayout:
+
+        Label:
+            text:"Username: "
+            font_size: (root.width**2 + root.height**2) / 13**4
+            pos_hint: {"x":0.05, "top":0.9}
+            size_hint: 0.35, 0.1
+
+        TextInput:
+            id: userName
+            font_size: (root.width**2 + root.height**2) / 13**4
+            multiline: False
+            pos_hint: {"x": 0.45 , "top":0.9}
+            size_hint: 0.4, 0.1
+
+        Label:
+            text:"Password: "
+            font_size: (root.width**2 + root.height**2) / 13**4
+            pos_hint: {"x":0.05, "top":0.7}
+            size_hint: 0.35, 0.1
+
+        TextInput:
+            id: password
+            font_size: (root.width**2 + root.height**2) / 13**4
+            multiline: False
+            password: True
+
+            pos_hint: {"x": 0.45, "top":0.7}
+            size_hint: 0.4, 0.1
+
+        Button:
+            pos_hint:{"x":0.3,"y":0.3}
+            size_hint: 0.4, 0.15
+            font_size: (root.width**2 + root.height**2) / 13**4
+            text: "Log in"
+            on_release:
+                root.manager.transition.direction = "up"
+                root.loginBtn()
+
+        Button:
+            pos_hint:{"x":0.35,"y":0.1}
+            size_hint: 0.3, 0.1
+            font_size: (root.width**2 + root.height**2) / 17**4
+            text: "Don't have account yet? Sign up!"
+            on_release:
+                root.manager.transition.direction = "right"
+                root.createBtn()
+
+
+<MainWindow>:
+    updateBtn: updateBtn
+    newBtn: newBtn
+    getBtn: getBtn
+    userName: userName
+    FloatLayout:
+        Label:
+            id: userName
+            pos_hint:{"x": 0.1, "top":1}
+            size_hint:0.8, 0.1
+            text: "Logged as: "
+        Button:
+            id: newBtn
+            pos_hint:{"x": 0.2, "top":0.85}
+            size_hint:0.6, 0.1
+            text: "Add a new password"
+            on_release:
+                app.root.current = "add"
+                root.manager.transition.direction = "left"
+                root.addPassword()
+        Button:
+            id: getBtn
+            pos_hint:{"x": 0.2, "top":0.65}
+            size_hint:0.6, 0.1
+            text: "Get yours password"
+            on_release:
+                app.root.current = "get"
+                root.manager.transition.direction = "left"
+                root.getPassword()
+        Button:
+            id: updateBtn
+            pos_hint:{"x": 0.2, "top":0.45}
+            size_hint:0.6, 0.1
+            text: "Update yours password"
+            on_release:
+                app.root.current = "update"
+                root.manager.transition.direction = "left"
+                root.updatePassword()
+        Button:
+            pos_hint:{"x":0.3, "y": 0.1}
+            size_hint:0.4,0.1
+            text: "Log out!"
+            on_release:
+                app.root.current = "login"
+                root.manager.transition.direction = "down"
+<AddPassword>:
+    service: service
+    password: password
+    userName: userName
+
+    FloatLayout:
+
+        Label:
+            id: userName
+            pos_hint:{"x": 0.1, "top":1}
+            size_hint:0.8, 0.1
+            text: "Logged as: "
+        Label:
+            text:"Service: "
+            font_size: (root.width**2 + root.height**2) / 13**4
+            pos_hint: {"x":0.1, "top":0.9}
+            size_hint: 0.35, 0.15
+
+        TextInput:
+            id: service
+            font_size: (root.width**2 + root.height**2) / 13**4
+            multiline: False
+            pos_hint: {"x": 0.45 , "top":0.9}
+            size_hint: 0.4, 0.15
+        Label:
+            text:"Password: "
+            font_size: (root.width**2 + root.height**2) / 13**4
+            pos_hint: {"x":0.1, "top":0.7}
+            size_hint: 0.35, 0.15
+
+        TextInput:
+            id: password
+            font_size: (root.width**2 + root.height**2) / 13**4
+            multiline: False
+            password: True
+            pos_hint: {"x": 0.45, "top":0.7}
+            size_hint: 0.4, 0.15
+
+        Button:
+            pos_hint:{"x":0.2,"y":0.3}
+            size_hint: 0.6, 0.2
+            font_size: (root.width**2 + root.height**2) / 12**4
+            text: "Save it!"
+            on_release:
+                root.addPassword()
+        Button:
+            pos_hint:{"x":0.2,"y":0.1}
+            size_hint: 0.6, 0.1
+            font_size: (root.width**2 + root.height**2) / 13**4
+            text: "Back to the menu"
+            on_release:
+                app.root.current = "main"
+                root.manager.transition.direction = "right"
+                root.reset()
+<GetPassword>:
+
+    service: service
+    userName: userName
+    password: password
+    FloatLayout:
+        Label:
+            id: userName
+            pos_hint:{"x": 0.1, "top":1}
+            size_hint:0.8, 0.1
+            text: "Logged as: "
+        Label:
+            text:"Service: "
+            font_size: (root.width**2 + root.height**2) / 13**4
+            pos_hint: {"x":0.1, "top":0.9}
+            size_hint: 0.35, 0.15
+
+        TextInput:
+            id: service
+            font_size: (root.width**2 + root.height**2) / 13**4
+            multiline: False
+            pos_hint: {"x": 0.45 , "top":0.9}
+            size_hint: 0.4, 0.15
+
+        Button:
+            pos_hint:{"x":0.3,"top":0.7}
+            size_hint: 0.4, 0.1
+            font_size: (root.width**2 + root.height**2) / 13**4
+            text: "Search it"
+            on_release:
+                root.getPassword()
+
+        TextInput:
+            id: password
+            size_hint: 0.5, 0.15
+            pos_hint:{"x":0.25,"top":0.5}
+            font_size: (root.width**2 + root.height**2) / 12**4
+            readonly: "True"
+
+
+        Button:
+            pos_hint:{"x":0.2,"y":0.1}
+            size_hint: 0.6, 0.1
+            font_size: (root.width**2 + root.height**2) / 13**4
+            text: "Back to the menu"
+            on_release:
+                app.root.current = "main"
+                root.manager.transition.direction = "right"
+                root.reset()
+
+<UpdatePassword>:
+    service: service
+    userName: userName
+    password: password
+    FloatLayout:
+        Label:
+            id: userName
+            pos_hint:{"x": 0.1, "top":1}
+            size_hint:0.8, 0.1
+            text: "Logged as: "
+        Label:
+            text:"Service: "
+            font_size: (root.width**2 + root.height**2) / 13**4
+            pos_hint: {"x":0.1, "top":0.9}
+            size_hint: 0.35, 0.15
+
+        TextInput:
+            id: service
+            font_size: (root.width**2 + root.height**2) / 13**4
+            multiline: False
+            pos_hint: {"x": 0.45 , "top":0.9}
+            size_hint: 0.4, 0.15
+
+        Label:
+            text:"New password: "
+            font_size: (root.width**2 + root.height**2) / 13**4
+            pos_hint: {"x":0.1, "top":0.7}
+            size_hint: 0.35, 0.15
+
+        TextInput:
+            id: password
+            multiline: False
+            size_hint: 0.4, 0.15
+            pos_hint:{"x":0.45,"top":0.7}
+            font_size: (root.width**2 + root.height**2) / 13**4
+
+        Button:
+            pos_hint:{"x":0.3,"top":0.5}
+            size_hint: 0.4, 0.1
+            font_size: (root.width**2 + root.height**2) / 13**4
+            text: "Update!"
+            on_release:
+                root.updatePassword()
+
+
+        Button:
+            pos_hint:{"x":0.2,"y":0.1}
+            size_hint: 0.6, 0.1
+            font_size: (root.width**2 + root.height**2) / 13**4
+            text: "Back to the menu"
+            on_release:
+                app.root.current = "main"
+                root.manager.transition.direction = "right"
+                root.reset()
