@@ -24,17 +24,18 @@ class CreateAccountWindow(Screen):
                 if add_userOutput:
                     self.reset()
                     wm.current = "login"
+                    show_popup('Account added successfully', 'Enjoy your account.')
                 else:
                     # invalidUsername()
-                    showPopup('Username already taken',
+                    show_popup('Username already taken',
                               'Please change your username.')
 
             else:
                 # invalidForm()
-                showPopup('Incorrect data', 'Please fill form with correct data.')
+                show_popup('Incorrect data', 'Please fill form with correct data.')
         else:
             # invalidForm()
-            showPopup('Incorrect data', 'Please fill form with correct data.')
+            show_popup('Incorrect data', 'Please fill form with correct data.')
 
     def login(self):
         self.reset()
@@ -51,10 +52,10 @@ class LoginWindow(Screen):
 
     # global passwordPlain
 
-    def loginBtn(self):
+    def login_btn(self):
         global passwordPlain
 
-        if db.validateLogin(self.userName.text, self.password.text):
+        if db.validate_login(self.userName.text, self.password.text):
             MainWindow.current = self.userName.text
             passwordPlain = self.password.text
             # print('self.passwordPlain ' + passwordPlain)
@@ -64,7 +65,7 @@ class LoginWindow(Screen):
             # print("Passwordplain ", passwordPlain)
         else:
             # invalidLogin()
-            showPopup('Invalid Login data', 'Incorrect username or password.')
+            show_popup('Invalid Login data', 'Incorrect username or password.')
 
     def createBtn(self):
         self.reset()
@@ -79,19 +80,19 @@ class MainWindow(Screen):
     userName = ObjectProperty(None)
     current = ""
 
-    def logOut(self):
+    def log_out(self):
         wm.current = "login"
 
     def on_enter(self, *args):
         self.userName.text = f"Logged as: {self.current}"
 
-    def addPassword(self):
+    def add_password(self):
         AddPassword.current = self.current
 
-    def getPassword(self):
+    def get_password(self):
         GetPassword.current = self.current
 
-    def updatePassword(self):
+    def update_password(self):
         UpdatePassword.current = self.current
 
 
@@ -101,16 +102,16 @@ class AddPassword(Screen):
     userName = ObjectProperty(None)
     current = ""
 
-    def addPassword(self):
-        encryptedPassword = db.encryptPassword(self.current, self.password.text, passwordPlain)
+    def add_password(self):
+        encryptedPassword = db.encrypt_password(self.current, self.password.text, passwordPlain)
         addOutput = db.add_password(self.service.text, self.current, encryptedPassword)
-        if not addOutput:
-            showPopup('Password to this service is already saved.', 'If you want to change this password, update it.')
-
-        elif addOutput:
-            showPopup("Password has been added.", "Your password has been added successfully.")
-
+        # print('addOutput ', addOutput)
+        if addOutput:
+            show_popup("Password has been added.", "Your password has been added successfully.")
             self.reset()
+        elif not addOutput:
+            show_popup('Password to this service is already saved.',
+                      'If you want to change this password, update it.')
 
     def on_enter(self, *args):
         self.userName.text = f"Logged as: {self.current}"
@@ -142,16 +143,17 @@ class GetPassword(Screen):
         # print(self.current)
         # print("popop " + self.passwordPlainL)
 
-    def getPassword(self):
+    def get_password(self):
         # password_service = db.get_encrypted_password(self.service.text, self.current)[0]
         # print(self.passwordPlainL)
         password_service = db.get_encrypted_password(self.service.text, self.current)
+        #print('password_service', password_service)
         if password_service:
-            plainServicePassword = db.decryptPassword(self.current, password_service[0], self.passwordPlainL)
+            plainServicePassword = db.decrypt_password(self.current, password_service[0], self.passwordPlainL)
             self.password.text = plainServicePassword
         # print(plainServicePassword)
         else:
-            showPopup("You don't have a saved password for this service", "You can add a new password to this service.")
+            show_popup("You don't have a saved password for this service", "You can add a new password to this service.")
             self.reset()
 
 
@@ -168,11 +170,13 @@ class UpdatePassword(Screen):
     def on_enter(self, *args):
         self.userName.text = f"Logged as: {self.current}"
 
-    def updatePassword(self):
+    def update_password(self):
         global passwordPlain
-        encryptedPassword = db.encryptPassword(self.current, self.password.text, passwordPlain)
+        encryptedPassword = db.encrypt_password(self.current, self.password.text, passwordPlain)
         # print(encryptedPassword)
         db.update_encrypted_password(self.service.text, self.current, encryptedPassword)
+        show_popup('Password updated successfully', 'Password updated successfully')
+        self.reset()
 
 
 # class CopyPassword(TextInput):
@@ -201,7 +205,7 @@ class UpdatePassword(Screen):
 #                   size_hint=(None, None), size=(400, 400))
 #
 #     pop.open()
-def showPopup(myTitle, myContent):
+def show_popup(myTitle, myContent):
     pop = Popup(title=myTitle, content=Label(text=myContent),
                 size_hint=(None, None), size=(400, 400))
     pop.open()

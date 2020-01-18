@@ -1,19 +1,19 @@
+import base64
+import os
 import sqlite3
 from hashlib import sha256
-import sys
-import base64
-from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
-from cryptography.hazmat.backends import default_backend
+
 from cryptography.fernet import Fernet
-import os
+from cryptography.hazmat.backends import default_backend
+from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 
 
-class DatabaseAndCrypto():
+class DatabaseAndCrypto:
     def __init__(self):
         self.dataBase = sqlite3.connect('passwords.db')
-        self.createTables()
+        self.create_tables()
 
-    def createTables(self):
+    def create_tables(self):
         # ------------------- USERS DATA TABLE-------------------
         self.dataBase.execute('''
             CREATE TABLE IF NOT EXISTS users_data (
@@ -55,14 +55,14 @@ class DatabaseAndCrypto():
         except TypeError:
             return False
 
-    def encryptPassword(self, userName, password_service, master_Password_Plain):
+    def encrypt_password(self, userName, password_service, master_Password_Plain):
         salt = self.get_salt_user(userName)
         crypto_key = self.get_crypto_key(master_Password_Plain, salt)
         f = Fernet(crypto_key)
         encrypted = f.encrypt(password_service.encode('utf-8'))
         return encrypted
 
-    def decryptPassword(self, userName, encrypted, master_Password_Plain, ):
+    def decrypt_password(self, userName, encrypted, master_Password_Plain, ):
         salt = self.get_salt_user(userName)
         crypto_key = self.get_crypto_key(master_Password_Plain, salt)
         f = Fernet(crypto_key)
@@ -75,28 +75,34 @@ class DatabaseAndCrypto():
 
     def add_password(self, service, userName, encrypted_password):
         # print("wlo ",self.get_encrypted_password(service, userName))
-        if self.get_encrypted_password(service, userName) is not None:
-            #print("juz jest")
-            return False
 
-        else:
+        if self.get_encrypted_password(service, userName) is False:
             self.dataBase.execute('''
                 INSERT INTO passwords(service, password, user_name) VALUES (:service,:password,:user_name);
             ''', {'service': service, 'password': encrypted_password, 'user_name': userName})
             self.dataBase.commit()
-            print('Hasło zostało dodane pomyślnie.')
+            # print('Hasło zostało dodane pomyślnie.')
             return True
+        else:
+            # print("juz jest")
+            return False
 
     def get_encrypted_password(self, service, userName):
 
         encryptedPassword = self.dataBase.execute(
             "SELECT password from passwords WHERE user_name=:currentUser AND service=:service",
             {'currentUser': userName, 'service': service})
-        if encryptedPassword.fetchone() is None:
-            return False
-        return encryptedPassword.fetchone()
+        encPass = encryptedPassword.fetchone()
 
-    def getUserData(self, currentUserName):
+        if encPass is None:
+            # print('encryptedPassword.fetchone() 1', encPass)
+            return False
+        else:
+            # print('encryptedPassword.fetchone() 2', encPass)
+            # print(encryptedPassword)
+            return encPass
+
+    def get_user_data(self, currentUserName):
         currentUserData = self.dataBase.cursor().execute("SELECT * from users_data WHERE user_name=:currentUser",
                                                          {'currentUser': currentUserName})
         return currentUserData.fetchone()
@@ -127,21 +133,21 @@ class DatabaseAndCrypto():
         except sqlite3.IntegrityError:
             return False
 
-        print('Konto %s zostało utworzone pomyślnie.' % userName)
+        # print('Konto %s zostało utworzone pomyślnie.' % userName)
         return True
         # return [userName, masterPassword]
 
-    def validateLogin(self, userName, masterPassword):
-        currentUserData = self.getUserData(userName)
+    def validate_login(self, userName, masterPassword):
+        currentUserData = self.get_user_data(userName)
         hashedMasterPassword = self.get_hex_key(masterPassword)
         # print(currentUserData)
         if currentUserData is not None:
             if hashedMasterPassword == currentUserData[2]:
                 return True
-                #print('Poprawne hasło')
+                # print('Poprawne hasło')
             else:
-                #print('Błędne hasło')
+                # print('Błędne hasło')
                 return False
         else:
-            #print('Nie ma takiego użytkownika')
+            # print('Nie ma takiego użytkownika')
             return False
