@@ -4,6 +4,7 @@ from kivy.properties import ObjectProperty
 from kivy.uix.label import Label
 from kivy.uix.popup import Popup
 from kivy.uix.screenmanager import ScreenManager, Screen
+
 from databaseAndCrypto import DatabaseAndCrypto
 
 passwordPlain = ""
@@ -28,7 +29,7 @@ class CreateAccountWindow(Screen):
                 else:
                     # invalidUsername()
                     show_popup('Username already taken',
-                              'Please change your username.')
+                               'Please change your username.')
 
             else:
                 # invalidForm()
@@ -67,7 +68,7 @@ class LoginWindow(Screen):
             # invalidLogin()
             show_popup('Invalid Login data', 'Incorrect username or password.')
 
-    def createBtn(self):
+    def create_btn(self):
         self.reset()
         wm.current = "create"
 
@@ -80,7 +81,8 @@ class MainWindow(Screen):
     userName = ObjectProperty(None)
     current = ""
 
-    def log_out(self):
+    @staticmethod
+    def log_out():
         wm.current = "login"
 
     def on_enter(self, *args):
@@ -111,7 +113,7 @@ class AddPassword(Screen):
             self.reset()
         elif not addOutput:
             show_popup('Password to this service is already saved.',
-                      'If you want to change this password, update it.')
+                       'If you want to change this password, update it.')
 
     def on_enter(self, *args):
         self.userName.text = f"Logged as: {self.current}"
@@ -147,14 +149,30 @@ class GetPassword(Screen):
         # password_service = db.get_encrypted_password(self.service.text, self.current)[0]
         # print(self.passwordPlainL)
         password_service = db.get_encrypted_password(self.service.text, self.current)
-        #print('password_service', password_service)
+        # print('password_service', password_service)
         if password_service:
             plainServicePassword = db.decrypt_password(self.current, password_service[0], self.passwordPlainL)
             self.password.text = plainServicePassword
         # print(plainServicePassword)
         else:
-            show_popup("You don't have a saved password for this service", "You can add a new password to this service.")
+            show_popup("You don't have a saved password for this service",
+                       "You can add a new password to this service.")
             self.reset()
+
+    def get_all_services(self):
+        allServicesRaw = db.get_all_services(self.current)
+        allServices = []
+
+        for record in allServicesRaw:
+            allServices.append(record[0])
+        separator = ', '
+        self.password.text = separator.join(allServices)
+
+    def check_choice(self):
+        if self.service.text == "*":
+            self.get_all_services()
+        else:
+            self.get_password()
 
 
 class UpdatePassword(Screen):

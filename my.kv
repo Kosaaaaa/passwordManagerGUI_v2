@@ -112,7 +112,7 @@
             text: "Don't have account yet? Sign up!"
             on_release:
                 root.manager.transition.direction = "right"
-                root.createBtn()
+                root.create_btn()
 
 
 <MainWindow>:
@@ -244,11 +244,11 @@
             font_size: (root.width**2 + root.height**2) / 13**4
             text: "Search it"
             on_release:
-                root.get_password()
+                root.check_choice()
 
         TextInput:
             id: password
-            size_hint: 0.5, 0.15
+            size_hint: 0.5, 0.2
             pos_hint:{"x":0.25,"top":0.5}
             font_size: (root.width**2 + root.height**2) / 12**4
             readonly: "True"

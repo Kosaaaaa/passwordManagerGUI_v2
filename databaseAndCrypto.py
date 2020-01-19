@@ -151,3 +151,8 @@ class DatabaseAndCrypto:
         else:
             # print('Nie ma takiego użytkownika')
             return False
+
+    def get_all_services(self, userName):
+        return self.dataBase.execute(
+            'SELECT service FROM passwords WHERE user_name=:currentUser', {'currentUser': userName}
+        ).fetchall()
