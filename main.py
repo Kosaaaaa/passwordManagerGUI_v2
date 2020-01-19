@@ -5,7 +5,7 @@ from kivy.uix.label import Label
 from kivy.uix.popup import Popup
 from kivy.uix.screenmanager import ScreenManager, Screen
 
-from databaseAndCrypto import DatabaseAndCrypto
+from databaseAndCrypto import DatabaseAndCrypto # Local module 
 
 passwordPlain = ""
 
