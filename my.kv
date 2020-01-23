@@ -296,6 +296,7 @@
         TextInput:
             id: password
             multiline: False
+            password: True
             size_hint: 0.4, 0.15
             pos_hint:{"x":0.45,"top":0.7}
             font_size: (root.width**2 + root.height**2) / 13**4
@@ -305,6 +306,7 @@
             size_hint: 0.4, 0.1
             font_size: (root.width**2 + root.height**2) / 13**4
             text: "Update!"
+
             on_release:
                 root.update_password()
 

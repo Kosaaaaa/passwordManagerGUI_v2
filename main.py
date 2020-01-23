@@ -105,6 +105,8 @@ class AddPassword(Screen):
     current = ""
 
     def add_password(self):
+        if self.service.text == "*":
+            return show_popup("Password hasn't been added", "Your service name was incorrect.")
         encryptedPassword = db.encrypt_password(self.current, self.password.text, passwordPlain)
         addOutput = db.add_password(self.service.text, self.current, encryptedPassword)
         # print('addOutput ', addOutput)
@@ -190,9 +192,13 @@ class UpdatePassword(Screen):
 
     def update_password(self):
         global passwordPlain
+        if len(self.password.text) < 1:
+            return show_popup("Password hasn't been added", "Your service name or password was incorrect.")
         encryptedPassword = db.encrypt_password(self.current, self.password.text, passwordPlain)
         # print(encryptedPassword)
-        db.update_encrypted_password(self.service.text, self.current, encryptedPassword)
+        updateOutput = db.update_encrypted_password(self.service.text, self.current, encryptedPassword)
+        if not updateOutput:
+            return show_popup("Password hasn't been added", "Your service name couldn't be found.")
         show_popup('Password updated successfully', 'Password updated successfully')
         self.reset()
 
